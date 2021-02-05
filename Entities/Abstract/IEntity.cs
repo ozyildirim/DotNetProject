@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Entities.Abstract
 {
-    //IEntity ı uygulayan eden sınıflar, birer veritabanı tablosudur.
-    interface IEntity
+    //IEntity ı uygulayan sınıflar, birer veritabanı tablosudur.
+    public interface IEntity
     {
 
     }
