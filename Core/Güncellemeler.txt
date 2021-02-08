@@ -4,3 +4,5 @@
 	DataAccess ve Entities katmanlarına Core için referans eklendi.
 
 -> DAL parçaları da generic yapıya dönüştürüldü ve Core katmanına eklendi.
+
+-> DTO Eklendi. Data Transformation Object

@@ -9,6 +9,6 @@ namespace DataAccess.Concrete.EntityFramework
 {
     public class EfOrderDal:EfEntityRepositoryBase<Order,NorthwindContext>,IOrderDal
     {
-        // TODO: 1:46:39 da kaldım
+
     }
 }
