@@ -1,0 +1,6 @@
+﻿07.02.2021
+
+-> Core katmanı oluşturuldu, IEntity abstract yapısı ve IEntityRepository yapısı buraya taşındı. Bunları kullanan
+	DataAccess ve Entities katmanlarına Core için referans eklendi.
+
+-> DAL parçaları da generic yapıya dönüştürüldü ve Core katmanına eklendi.
