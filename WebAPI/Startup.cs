@@ -33,9 +33,9 @@ namespace WebAPI
             //AOP
             //Autofac, Ninject, CastleWindsor, StructureMap, LightInject -> Mimariler
             services.AddControllers();
-            services.AddSingleton<IProductService,ProductManager>(); //IoC
-            //birisi constructorda IProductService isterse, ona ProductManager veriyor.
-            services.AddSingleton<IProductDal, EfProductDal>();
+            //services.AddSingleton<IProductService,ProductManager>(); //IoC
+            ////birisi constructorda IProductService isterse, ona ProductManager veriyor.
+            //services.AddSingleton<IProductDal, EfProductDal>();
         
         }   
 
