@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Autofac.Extras.DynamicProxy;
 using Business.Abstract;
+using Business.CCS;
 using Business.Concrete;
 using Castle.DynamicProxy;
 using Core.Utilities.Interceptors;
@@ -19,6 +20,10 @@ namespace Business.DependencyResolvers.Autofac
             //API Startup dosyasında yaptığımız LazySingeleton işlemini(IoC), burada Autofac yapısı ile yapıyoruz.
             builder.RegisterType<ProductManager>().As<IProductService>().SingleInstance(); //bir yapı IPS isterse, ProductManager ver
             builder.RegisterType<EfProductDal>().As<IProductDal>().SingleInstance();
+
+            builder.RegisterType<CategoryManager>().As<ICategoryService>().SingleInstance();
+            builder.RegisterType<EfCategoryDal>().As<ICategoryDal>().SingleInstance();
+
 
             var assembly = System.Reflection.Assembly.GetExecutingAssembly();
 

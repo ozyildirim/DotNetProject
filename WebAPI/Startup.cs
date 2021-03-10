@@ -18,7 +18,7 @@ using System.Threading.Tasks;
 namespace WebAPI
 {
     public class Startup
-    { //TODO: 01:55:53 te kaldým
+    {
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
