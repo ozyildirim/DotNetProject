@@ -29,6 +29,7 @@ namespace Business.Concrete
 
         // TODO: Diğer manager sınıflarını da yaz, validatorsları da oluştur. Diğer entityler için eksik sınıflar var.
 
+        //[SecuredOperation("admin,editor")]
         [ValidationAspect(typeof(ProductValidator))]
         public IResult Add(Product product)
         {

@@ -36,8 +36,8 @@ namespace WebAPI
             //services.AddSingleton<IProductService,ProductManager>(); //IoC
             ////birisi constructorda IProductService isterse, ona ProductManager veriyor.
             //services.AddSingleton<IProductDal, EfProductDal>();
-        
-        }   
+
+        }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
