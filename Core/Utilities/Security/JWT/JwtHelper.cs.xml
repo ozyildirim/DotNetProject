@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<unit xmlns="http://www.srcML.org/srcML/src" revision="1.0.0" language="C#" filename="JwtHelper.cs"><using>using <name><name>Core</name><operator>.</operator><name>Entities</name><operator>.</operator><name>Concrete</name></name>;</using>
+<using>using <name><name>Core</name><operator>.</operator><name>Utilities</name><operator>.</operator><name>Security</name><operator>.</operator><name>Encryption</name></name>;</using>
+<using>using <name><name>Microsoft</name><operator>.</operator><name>Extensions</name><operator>.</operator><name>Configuration</name></name>;</using>
+<using>using <name>System</name>;</using>
+<using>using <name><name>System</name><operator>.</operator><name>Collections</name><operator>.</operator><name>Generic</name></name>;</using>
+<using>using <name><name>System</name><operator>.</operator><name>Text</name></name>;</using>
+
+<namespace>namespace <name><name>Core</name><operator>.</operator><name>Utilities</name><operator>.</operator><name>Security</name><operator>.</operator><name>JWT</name></name>
+<block>{
+    <class><specifier>public</specifier> class <name>JwtHelper</name> <super_list>: <super><name>ITokenHelper</name></super></super_list>
+    <block>{
+        <property><type><specifier>public</specifier> <name>IConfiguration</name></type> <name>Configuration</name> <block>{ <function_decl><name>get</name>;</function_decl> }</block></property>
+        <decl_stmt><decl><type><specifier>private</specifier> <name>TokenOptions</name></type> <name>_tokenOptions</name></decl>;</decl_stmt>
+        <decl_stmt><decl><type><specifier>private</specifier> <name>DateTime</name></type> <name>_accessTokenExpiration</name></decl>;</decl_stmt>
+        <constructor><specifier>public</specifier> <name>JwtHelper</name><parameter_list>(<parameter><decl><type><name>IConfiguration</name></type> <name>configuration</name></decl></parameter>)</parameter_list>
+        <block>{<block_content>
+            <expr_stmt><expr><name>Configuration</name> <operator>=</operator> <name>configuration</name></expr>;</expr_stmt>
+            <expr_stmt><expr><name>_tokenOptions</name> <operator>=</operator> <call><name><name>Configuration</name><operator>.</operator><name>GetSection</name></name><argument_list>(<argument><expr><literal type="string">"TokenOptions"</literal></expr></argument>)</argument_list></call><operator>.</operator><call><name><name>Get</name><argument_list type="generic">&lt;<argument><name>TokenOptions</name></argument>&gt;</argument_list></name><argument_list>()</argument_list></call></expr>;</expr_stmt>
+
+        </block_content>}</block></constructor>
+        <function><type><specifier>public</specifier> <name>AccessToken</name></type> <name>CreateToken</name><parameter_list>(<parameter><decl><type><name>User</name></type> <name>user</name></decl></parameter>, <parameter><decl><type><name><name>List</name><argument_list type="generic">&lt;<argument><name>OperationClaim</name></argument>&gt;</argument_list></name></type> <name>operationClaims</name></decl></parameter>)</parameter_list>
+        <block>{<block_content>
+            <expr_stmt><expr><name>_accessTokenExpiration</name> <operator>=</operator> <call><name><name>DateTime</name><operator>.</operator><name>Now</name><operator>.</operator><name>AddMinutes</name></name><argument_list>(<argument><expr><name><name>_tokenOptions</name><operator>.</operator><name>AccessTokenExpiration</name></name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+            <decl_stmt><decl><type><name>var</name></type> <name>securityKey</name> <init>= <expr><call><name><name>SecurityKeyHelper</name><operator>.</operator><name>CreateSecurityKey</name></name><argument_list>(<argument><expr><name><name>_tokenOptions</name><operator>.</operator><name>SecurityKey</name></name></expr></argument>)</argument_list></call></expr></init></decl>;</decl_stmt>
+            <decl_stmt><decl><type><name>var</name></type> <name>signingCredentials</name> <init>= <expr><call><name><name>SigningCredentialsHelper</name><operator>.</operator><name>CreateSigningCredentials</name></name><argument_list>(<argument><expr><name>securityKey</name></expr></argument>)</argument_list></call></expr></init></decl>;</decl_stmt>
+            <decl_stmt><decl><type><name>var</name></type> <name>jwt</name> <init>= <expr><call><name>CreateJwtSecurityToken</name><argument_list>(<argument><expr><name>_tokenOptions</name></expr></argument>, <argument><expr><name>user</name></expr></argument>, <argument><expr><name>signingCredentials</name></expr></argument>, <argument><expr><name>operationClaims</name></expr></argument>)</argument_list></call></expr></init></decl>;</decl_stmt>
+            <decl_stmt><decl><type><name>var</name></type> <name>jwtSecurityTokenHandler</name> <init>= <expr><operator>new</operator> <call><name>JwtSecurityTokenHandler</name><argument_list>()</argument_list></call></expr></init></decl>;</decl_stmt>
+            <decl_stmt><decl><type><name>var</name></type> <name>token</name> <init>= <expr><call><name><name>jwtSecurityTokenHandler</name><operator>.</operator><name>WriteToken</name></name><argument_list>(<argument><expr><name>jwt</name></expr></argument>)</argument_list></call></expr></init></decl>;</decl_stmt>
+
+            <return>return <expr><operator>new</operator> <name>AccessToken</name>
+            <block>{
+                <expr><name>Token</name> <operator>=</operator> <name>token</name></expr>,
+                <expr><name>Expiration</name> <operator>=</operator> <name>_accessTokenExpiration</name></expr>
+            }</block></expr>;</return>
+
+        </block_content>}</block></function>
+
+        <function><type><specifier>public</specifier> <name>JwtSecurityToken</name></type> <name>CreateJwtSecurityToken</name><parameter_list>(<parameter><decl><type><name>TokenOptions</name></type> <name>tokenOptions</name></decl></parameter>, <parameter><decl><type><name>User</name></type> <name>user</name></decl></parameter>,
+            <parameter><decl><type><name>SigningCredentials</name></type> <name>signingCredentials</name></decl></parameter>, <parameter><decl><type><name><name>List</name><argument_list type="generic">&lt;<argument><name>OperationClaim</name></argument>&gt;</argument_list></name></type> <name>operationClaims</name></decl></parameter>)</parameter_list>
+        <block>{<block_content>
+            <decl_stmt><decl><type><name>var</name></type> <name>jwt</name> <init>= <expr><operator>new</operator> <call><name>JwtSecurityToken</name><argument_list>(
+                <argument><name>issuer</name>: <expr><name><name>tokenOptions</name><operator>.</operator><name>Issuer</name></name></expr></argument>,
+                <argument><name>audience</name>: <expr><name><name>tokenOptions</name><operator>.</operator><name>Audience</name></name></expr></argument>,
+                <argument><name>expires</name>: <expr><name>_accessTokenExpiration</name></expr></argument>,
+                <argument><name>notBefore</name>: <expr><name><name>DateTime</name><operator>.</operator><name>Now</name></name></expr></argument>,
+                <argument><name>claims</name>: <expr><call><name>SetClaims</name><argument_list>(<argument><expr><name>user</name></expr></argument>, <argument><expr><name>operationClaims</name></expr></argument>)</argument_list></call></expr></argument>,
+                <argument><name>signingCredentials</name>: <expr><name>signingCredentials</name></expr></argument>
+            )</argument_list></call></expr></init></decl>;</decl_stmt>
+            <return>return <expr><name>jwt</name></expr>;</return>
+        </block_content>}</block></function>
+
+        <function><type><specifier>private</specifier> <name><name>IEnumerable</name><argument_list type="generic">&lt;<argument><name>Claim</name></argument>&gt;</argument_list></name></type> <name>SetClaims</name><parameter_list>(<parameter><decl><type><name>User</name></type> <name>user</name></decl></parameter>, <parameter><decl><type><name><name>List</name><argument_list type="generic">&lt;<argument><name>OperationClaim</name></argument>&gt;</argument_list></name></type> <name>operationClaims</name></decl></parameter>)</parameter_list>
+        <block>{<block_content>
+            <decl_stmt><decl><type><name>var</name></type> <name>claims</name> <init>= <expr><operator>new</operator> <call><name><name>List</name><argument_list type="generic">&lt;<argument><name>Claim</name></argument>&gt;</argument_list></name><argument_list>()</argument_list></call></expr></init></decl>;</decl_stmt>
+            <expr_stmt><expr><call><name><name>claims</name><operator>.</operator><name>AddNameIdentifier</name></name><argument_list>(<argument><expr><call><name><name>user</name><operator>.</operator><name>Id</name><operator>.</operator><name>ToString</name></name><argument_list>()</argument_list></call></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+            <expr_stmt><expr><call><name><name>claims</name><operator>.</operator><name>AddEmail</name></name><argument_list>(<argument><expr><name><name>user</name><operator>.</operator><name>Email</name></name></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+            <expr_stmt><expr><call><name><name>claims</name><operator>.</operator><name>AddName</name></name><argument_list>(<argument><expr><name>$</name><literal type="string">"{user.FirstName} {user.LastName}"</literal></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+            <expr_stmt><expr><call><name><name>claims</name><operator>.</operator><name>AddRoles</name></name><argument_list>(<argument><expr><call><name><name>operationClaims</name><operator>.</operator><name>Select</name></name><argument_list>(<argument><expr><lambda><parameter_list type="pseudo"><parameter><decl><name>c</name></decl></parameter></parameter_list> =&gt;<block type="pseudo"><block_content> <expr><name><name>c</name><operator>.</operator><name>Name</name></name></expr></block_content></block></lambda></expr></argument>)</argument_list></call><operator>.</operator><call><name>ToArray</name><argument_list>()</argument_list></call></expr></argument>)</argument_list></call></expr>;</expr_stmt>
+
+            <return>return <expr><name>claims</name></expr>;</return>
+        </block_content>}</block></function>
+    }</block></class>
+}</block></namespace>
+</unit>
